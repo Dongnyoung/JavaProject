@@ -16,7 +16,6 @@ public class GameFrame extends JFrame{
 	private SkillPanel skillPanel = new SkillPanel();
 	private GamePanel gamePanel = new GamePanel(scorePanel);
 	
-	//private MonsterPanel monsterPanel = new MonsterPanel();
 	public GameFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -55,6 +54,15 @@ public class GameFrame extends JFrame{
 		JMenuItem startItem = new JMenuItem("Start");
 		fileMenu.add(startItem);
 		
+		startItem.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				gamePanel.startGame();
+			}
+			
+		});
 
 			
 		JMenuItem stopItem = new JMenuItem("Stop");
