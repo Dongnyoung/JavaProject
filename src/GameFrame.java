@@ -3,19 +3,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import javax.swing.*;
 
 public class GameFrame extends JFrame{
+	
 	private ScorePanel scorePanel = new ScorePanel();
 	private SkillPanel skillPanel = new SkillPanel();
 	private GamePanel gamePanel = new GamePanel(scorePanel);
+	
+	//private MonsterPanel monsterPanel = new MonsterPanel();
 	public GameFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		setTitle("게임");
-		setSize(800,600);
+		setSize(1000,600);
+		
 		makeMenu();
 		makeSplit();
 		this.setResizable(false);
@@ -24,13 +31,13 @@ public class GameFrame extends JFrame{
 	
 	private void makeSplit() {
 		JSplitPane hPane = new JSplitPane();
-		hPane.setDividerLocation(550);
+		hPane.setDividerLocation(800);
 		getContentPane().add(hPane, BorderLayout.CENTER);
 		hPane.setEnabled(false);
 
 		JSplitPane vPane = new JSplitPane();
 		vPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		vPane.setDividerLocation(300);
+		vPane.setDividerLocation(400);
 		vPane.setTopComponent(scorePanel);
 		vPane.setBottomComponent(skillPanel);
 		
