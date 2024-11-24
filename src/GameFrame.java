@@ -16,11 +16,13 @@ public class GameFrame extends JFrame{
 	private SkillPanel skillPanel = new SkillPanel();
 	private GamePanel gamePanel = new GamePanel(scorePanel);
 	
+	
+	
 	public GameFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setTitle("게임");
-		setSize(1000,600);
+		setSize(1000,700);
 		
 		makeMenu();
 		makeSplit();
