@@ -3,8 +3,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class GamePanel extends JPanel{
     private Image backgroundImage;
@@ -30,14 +31,16 @@ public class GamePanel extends JPanel{
     private Image img = icon.getImage();
 
     private AttackThread aThread = new AttackThread();
+    private TimerThread tThread = new TimerThread();
     private GameGroundPanel ground = new GameGroundPanel();
     private InputPanel input = new InputPanel();
-
+    
     public GamePanel(ScorePanel scorePanel) {
         this.scorePanel = scorePanel;
         this.setLayout(new BorderLayout());
         add(ground, BorderLayout.CENTER);
         add(input, BorderLayout.SOUTH);
+        
     }
 
     class GameGroundPanel extends JPanel {
@@ -46,11 +49,8 @@ public class GamePanel extends JPanel{
         	Dimension d = getSize();
             g.drawImage(img, 0, 0, d.width, d.height, this);
         }
-
-        public GameGroundPanel() {
-            setLayout(null);
-
-            // 여러 부기 생성
+        private void makeBoogi() {
+        	// 여러 부기 생성
             int numBoogis = 20; // 퇴치부기의 수
             attackingLabels = new JLabel[numBoogis];
             wordLabels = new JLabel[numBoogis];
@@ -87,6 +87,12 @@ public class GamePanel extends JPanel{
                 add(attackingLabels[i]);
             }
         }
+        
+        public GameGroundPanel() {
+            setLayout(null);
+            makeBoogi();
+        }
+        
     }
 
     // 부기가 다가오는(공격) 스레드
@@ -101,7 +107,7 @@ public class GamePanel extends JPanel{
                     // 각 부기가 이동하는 스레드 시작
                     MoveBoogiThread moveBoogiThread = new MoveBoogiThread(wordLabels[i], attackingLabels[i]);
                     moveBoogiThread.start();
-
+                    
                     sleep(3000); // 다음 부기 등장까지 3초 대기
                 } catch (InterruptedException e) {
                     return;
@@ -125,9 +131,9 @@ public class GamePanel extends JPanel{
                 while (attackingLabel.getX() > 0) {
                     wordLabel.setLocation(wordLabel.getX() - 10, wordLabel.getY());
                     attackingLabel.setLocation(attackingLabel.getX() - 10, attackingLabel.getY());
-                    sleep(100); // 부기의 이동 속도
+                    sleep(300); // 부기의 이동 속도
                 }
-                scorePanel.boogicannotKill();
+                //scorePanel.boogicannotKill();
                 
                 wordLabel.setVisible(false);
                 attackingLabel.setVisible(false);
@@ -137,9 +143,29 @@ public class GamePanel extends JPanel{
             }
         }
     }
-
+    
+    
+    
+    class TimerThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                sleep(60000); // 1분 후에 게임 종료
+                aThread.interrupt();
+                JOptionPane.showMessageDialog(null, "게임 종료! 퇴치한 부기 수: " + scorePanel.score);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    } // 1분 후에 게임 종료
+    
     public void startGame() {
-        aThread.start();
+        tThread.start();
+    	aThread.start();
+        
+        
+        
+
     }
 
     class InputPanel extends JPanel {

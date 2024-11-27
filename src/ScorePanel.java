@@ -2,8 +2,8 @@ import java.awt.*;
 import javax.swing.*;
 
 public class ScorePanel extends JPanel { // 점수판
-    private int score = 0;
-    private int cannotKill = 0;
+    public int score = 0;
+    //public int cannotKill = 0;
     private JLabel killScoreLabel = new JLabel(Integer.toString(score));
     private JLabel notKillScoreLabel = new JLabel(Integer.toString(cannotKill));
 
@@ -16,13 +16,15 @@ public class ScorePanel extends JPanel { // 점수판
         leftPanel.add(new JLabel("퇴치성공: "));
         leftPanel.add(killScoreLabel);
 
-        JPanel rightPanel = new JPanel();
+        /*JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.YELLOW);
         rightPanel.add(new JLabel("퇴치실패: "));
         rightPanel.add(notKillScoreLabel);
 
+         */
         this.add(leftPanel, BorderLayout.WEST);
-        this.add(rightPanel, BorderLayout.EAST);
+        
+        //this.add(rightPanel, BorderLayout.EAST);
     }
 
     // 점수판 구현
@@ -30,9 +32,10 @@ public class ScorePanel extends JPanel { // 점수판
         score++;
         killScoreLabel.setText(Integer.toString(score));
     }
-
+    /*
     public void boogicannotKill() {
         cannotKill++;
         notKillScoreLabel.setText(Integer.toString(cannotKill));
     }
+    */
 }
