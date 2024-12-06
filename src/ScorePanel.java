@@ -5,7 +5,7 @@ public class ScorePanel extends JPanel { // 점수판
     public int score = 0;
     //public int cannotKill = 0;
     private JLabel killScoreLabel = new JLabel(Integer.toString(score));
-    private JLabel notKillScoreLabel = new JLabel(Integer.toString(cannotKill));
+    //private JLabel notKillScoreLabel = new JLabel(Integer.toString(cannotKill));
 
     public ScorePanel() {
         this.setBackground(Color.YELLOW);

@@ -5,8 +5,10 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.Timer;
 import java.util.TimerTask;
-
-
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.AudioInputStream;
+import java.io.File;
 public class GamePanel extends JPanel{
     private Image backgroundImage;
     private ScorePanel scorePanel = null;
@@ -18,6 +20,8 @@ public class GamePanel extends JPanel{
 
     // 부기
     private ImageIcon boogiIcon = new ImageIcon("resource/img/boogi.jpg");
+    private ImageIcon deathBoogi = new ImageIcon("resource/img/deathboogi.jpg");
+    private Image deathBoogiImg = deathBoogi.getImage();
     private Image boogiImg = boogiIcon.getImage();
     private JLabel[] attackingLabels;
 
@@ -184,8 +188,35 @@ public class GamePanel extends JPanel{
                         if (wordLabels[i].isVisible() && inputText.equals(wordLabels[i].getText())) {
                             // 단어가 맞았을 때 해당 부기와 단어를 숨김
                         	scorePanel.boogiKillscore();
-                            wordLabels[i].setVisible(false);
-                            attackingLabels[i].setVisible(false);
+                        	attackingLabels[i].setIcon(deathBoogi);
+                        	// Play sound effect in a separate thread
+                            new Thread(() -> {
+                                try {
+                                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("resource/sound/deathSound.wav"));
+                                    Clip clip = AudioSystem.getClip();
+                                    clip.open(audioInputStream);
+                                    clip.start();
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }).start();
+                            
+                            // final index to use inside TimerTask
+                            final int index = i;
+                            
+                            // 1초 후에 부기와 단어 숨기기 (별도의 타이머 사용)
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    SwingUtilities.invokeLater(() -> {
+                                        wordLabels[index].setVisible(false);
+                                        attackingLabels[index].setVisible(false);
+                                    });
+                                }
+                            }, 1000);
+                            
+                           
                             text.setText("");
                             break;
                         }
