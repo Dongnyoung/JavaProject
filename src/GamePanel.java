@@ -18,6 +18,13 @@ public class GamePanel extends JPanel{
     private final int monsterWidth = 100;
     private final int monsterHeight = 108;
 
+    //마법사(사용자)
+    private ImageIcon userIcon = new ImageIcon("resource/img/wizard.jpg");
+    private ImageIcon attackWizard = new ImageIcon("resource/img/attackWizard.jpg");
+    private Image userImg = userIcon.getImage();
+    private Image attackImg = attackWizard.getImage();
+    private JLabel userLabel;
+    
     // 부기
     private ImageIcon boogiIcon = new ImageIcon("resource/img/boogi.jpg");
     private ImageIcon deathBoogi = new ImageIcon("resource/img/deathboogi.jpg");
@@ -55,7 +62,7 @@ public class GamePanel extends JPanel{
         }
         private void makeBoogi() {
         	// 여러 부기 생성
-            int numBoogis = 20; // 퇴치부기의 수
+            int numBoogis = 60; // 최대퇴치부기의 수
             attackingLabels = new JLabel[numBoogis];
             wordLabels = new JLabel[numBoogis];
             words = new String[numBoogis];
@@ -91,18 +98,27 @@ public class GamePanel extends JPanel{
                 add(attackingLabels[i]);
             }
         }
-        
+        public void makeUser() {
+        	userLabel = new JLabel(userIcon);
+        	userLabel.setSize(100,100);
+        	userLabel.setLocation(100,200);
+        	userLabel.setVisible(false);
+        	add(userLabel);
+        }
         public GameGroundPanel() {
             setLayout(null);
             makeBoogi();
+            makeUser();
         }
         
     }
 
     // 부기가 다가오는(공격) 스레드
     class AttackThread extends Thread {
+    	
         @Override
         public void run() {
+        	userLabel.setVisible(true);
             for (int i = 0; i < attackingLabels.length; i++) {
                 try {
                     wordLabels[i].setVisible(true);
@@ -119,11 +135,11 @@ public class GamePanel extends JPanel{
             }
         }
     }
-
+    
     class MoveBoogiThread extends Thread {
         private JLabel wordLabel;
         private JLabel attackingLabel;
-
+        
         public MoveBoogiThread(JLabel wordLabel, JLabel attackingLabel) {
             this.wordLabel = wordLabel;
             this.attackingLabel = attackingLabel;
@@ -166,10 +182,7 @@ public class GamePanel extends JPanel{
     public void startGame() {
         tThread.start();
     	aThread.start();
-        
-        
-        
-
+      
     }
 
     class InputPanel extends JPanel {
