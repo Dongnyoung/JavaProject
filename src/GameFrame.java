@@ -14,7 +14,7 @@ public class GameFrame extends JFrame{
 	
 	private ScorePanel scorePanel = new ScorePanel();
 	private SkillPanel skillPanel = new SkillPanel();
-	private GamePanel gamePanel = new GamePanel(scorePanel);
+	private GamePanel gamePanel = new GamePanel(scorePanel,skillPanel);
 	
 	
 	

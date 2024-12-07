@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>resource/img/wizard.jpg</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/%EA%B0%9D%EC%A7%802/%EA%B2%8C%EC%9E%84%EC%9D%B4%EB%AF%B8%EC%A7%80/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2024-11-23_231842-removebg-preview%20(1).png</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>
