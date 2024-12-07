@@ -7,7 +7,14 @@ public class SkillPanel extends JPanel {
 	
 	 private int lives = 5; // 초기 목숨 개수
 	 private JLabel[] lifeLabels; // 목숨을 표시할 레이블 배열
+	    private Image backgroundImage = new ImageIcon("resource/img/lifeBackground.jpg").getImage(); // 배경 이미지 경로
 
+	 
+	 protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        // 배경 이미지 그리기
+	        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+	    }
 	 public SkillPanel() {
 	        this.setBackground(Color.CYAN);
 	        this.setLayout(new FlowLayout(FlowLayout.LEFT)); // 목숨 표시 정렬
@@ -21,7 +28,7 @@ public class SkillPanel extends JPanel {
 	            this.add(lifeLabels[i]);
 	        }
 	 }
-
+	 
 	    // 목숨 감소 메서드
 	 public void loseLife() {
 	        if (lives > 0) {

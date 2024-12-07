@@ -90,15 +90,16 @@ public class GamePanel extends JPanel {
 
                 // 단어 설정
                 words[i] = wordVec.get();
-                if (words[i].length() * 10 > monsterWidth) {
+                if (words[i].length() * 15 > monsterWidth) {
                     i--;
                     continue;
                 }
 
                 wordLabels[i] = new JLabel(words[i]);
                 wordLabels[i].setForeground(Color.white);
-                wordLabels[i].setFont(new Font("Arial", Font.BOLD, 15));
+                wordLabels[i].setFont(new Font("Arial", Font.BOLD, 20));
                 wordLabels[i].setSize(monsterWidth, 20);
+                wordLabels[i].setHorizontalAlignment(SwingConstants.CENTER); 
                 wordLabels[i].setLocation(700, monsterHeight + locationY);
                 wordLabels[i].setVisible(false);
                 add(wordLabels[i]);
@@ -134,7 +135,7 @@ public class GamePanel extends JPanel {
                     moveBoogiThreads[i] = new MoveBoogiThread(wordLabels[i], attackingLabels[i], skillPanel);
                     moveBoogiThreads[i].start();
 
-                    sleep(1000); // 다음 부기 등장까지 대기
+                    sleep(2000); // 다음 부기 등장까지 대기
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -164,7 +165,7 @@ public class GamePanel extends JPanel {
                 while (attackingLabel.getX() > 100 && !isStopped) {
                     wordLabel.setLocation(wordLabel.getX() - 10, wordLabel.getY());
                     attackingLabel.setLocation(attackingLabel.getX() - 10, attackingLabel.getY());
-                    sleep(100);//부기이동속
+                    sleep(300);//부기이동속
                 }
                 if (attackingLabel.getX() <= 100 && !isStopped) {
                     if (skillPanel.getLives() == 0) {
@@ -235,7 +236,7 @@ public class GamePanel extends JPanel {
 
     class InputPanel extends JPanel {
         public InputPanel() {
-            this.setBackground(Color.GREEN);
+            this.setBackground(Color.RED);
             add(text);
 
             text.addActionListener(new ActionListener() {
@@ -325,8 +326,8 @@ public class GamePanel extends JPanel {
                 Point originalLocation = frame.getLocation(); // 원래 위치 저장
 
                 int shakeDistance = 10; // 흔들림 정도
-                int shakeDuration = 50; // 흔들림 시간 (ms)
-                int shakeCount = 5; // 흔들림 횟수
+                int shakeDuration = 10; // 흔들림 시간 (ms)
+                int shakeCount = 2; // 흔들림 횟수
 
                 for (int i = 0; i < shakeCount; i++) {
                     try {
