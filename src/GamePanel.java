@@ -54,7 +54,7 @@ public class GamePanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         // 타이머 레이블 초기화
-        timerLabel = new JLabel("Time Left: 60", SwingConstants.CENTER);
+        timerLabel = new JLabel("60", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         timerLabel.setForeground(Color.RED);
         this.add(timerLabel, BorderLayout.NORTH);
@@ -72,12 +72,12 @@ public class GamePanel extends JPanel {
             makeBoogi();
             makeUser();
         }
-
+        
         public void paintComponent(Graphics g) {
             Dimension d = getSize();
             g.drawImage(img, 0, 0, d.width, d.height, this);
         }
-
+        
         private void makeBoogi() {
             int numBoogis = 60; // 최대 퇴치 부기의 수
             attackingLabels = new JLabel[numBoogis];
@@ -115,7 +115,7 @@ public class GamePanel extends JPanel {
 
         private void makeUser() {
             userLabel = new JLabel(userIcon);
-            userLabel.setSize(110, 100);
+            userLabel.setSize(130, 100);
             userLabel.setLocation(10, 200);
             userLabel.setVisible(false);
             add(userLabel);
@@ -155,28 +155,38 @@ public class GamePanel extends JPanel {
             this.skillPanel = skillPanel;
         }
 
-        public void stopMoving() {
+        public synchronized void stopMoving() {
             isStopped = true;
+        }
+
+        private synchronized boolean isStopped() {
+            return isStopped;
         }
 
         @Override
         public void run() {
-            try {
-                while (attackingLabel.getX() > 100 && !isStopped) {
-                    wordLabel.setLocation(wordLabel.getX() - 10, wordLabel.getY());
-                    attackingLabel.setLocation(attackingLabel.getX() - 10, attackingLabel.getY());
-                    sleep(300);//부기이동속
-                }
-                if (attackingLabel.getX() <= 100 && !isStopped) {
-                    if (skillPanel.getLives() == 0) {
-                        tThread.interrupt();
-                        aThread.interrupt();
-                        return;
+        	try {
+                while (attackingLabel.getX() > 100 && !isStopped()) {
+                    synchronized (this) {
+                        wordLabel.setLocation(wordLabel.getX() - 10, wordLabel.getY());
+                        attackingLabel.setLocation(attackingLabel.getX() - 10, attackingLabel.getY());
                     }
-                    shakeWindow();
-                    skillPanel.loseLife();
-                    wordLabel.setVisible(false);
-                    attackingLabel.setVisible(false);
+                    sleep(300); // 부기 이동 속도
+                }
+                synchronized (this) {
+                    if (attackingLabel.getX() <= 100 && !isStopped()) {
+                        if (skillPanel.getLives() == 0) {
+                            tThread.interrupt(); // tThread는 외부에서 선언된 스레드
+                            aThread.interrupt(); // aThread는 외부에서 선언된 스레드
+                            musicThread.stopMusic();
+                            return;
+                        }
+
+                        shakeWindow();
+                        skillPanel.loseLife();
+                        wordLabel.setVisible(false);
+                        attackingLabel.setVisible(false);
+                    }
                 }
             } catch (InterruptedException e) {
                 return;
@@ -191,7 +201,7 @@ public class GamePanel extends JPanel {
             try {
                 while (timeLeft > 0) {
                     int finalTimeLeft = timeLeft;
-                    SwingUtilities.invokeLater(() -> timerLabel.setText("Time Left: " + finalTimeLeft));
+                    SwingUtilities.invokeLater(() -> timerLabel.setText(""+finalTimeLeft));
                     sleep(1000);
                     timeLeft--;
                     if(timeLeft<5) {
@@ -200,6 +210,7 @@ public class GamePanel extends JPanel {
                 }
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Game Over!"));
                 aThread.interrupt();
+                tThread.interrupt();
                 musicThread.stopMusic();
             } catch (InterruptedException e) {
                 musicThread.stopMusic();
@@ -249,7 +260,8 @@ public class GamePanel extends JPanel {
                         if (wordLabels[i].isVisible() && inputText.equals(wordLabels[i].getText())) {
                             scorePanel.boogiKillscore();
                             userLabel.setIcon(attackWizard);
-                            userLabel.setLocation(80, 200);
+                            userLabel.setLocation(100, 200);
+                            shakeWindow();
                             attackingLabels[i].setIcon(deathBoogi);
 
                             if (moveBoogiThreads[i] != null) {
