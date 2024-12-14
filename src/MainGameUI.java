@@ -35,7 +35,7 @@ public class MainGameUI extends JFrame {
     // 메인 화면 구성
     private JPanel createMainPanel() {
         // 배경 이미지를 사용하는 패널
-        JPanel mainPanel = new BackgroundPanel("resource/img/image.jpg");
+        JPanel mainPanel = new BackgroundPanel("resource/img/main.jpg");
         mainPanel.setLayout(new BorderLayout());
 
         // 상단 타이틀

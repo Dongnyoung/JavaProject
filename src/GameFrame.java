@@ -14,10 +14,8 @@ public class GameFrame extends JFrame{
 	
 	private ScorePanel scorePanel = new ScorePanel();
 	private SkillPanel skillPanel = new SkillPanel();
-	private GamePanel gamePanel = new GamePanel(scorePanel,skillPanel);
 	private EndGamePanel endPanel = new EndGamePanel();
-	
-	
+	private GamePanel gamePanel = new GamePanel(scorePanel,skillPanel,endPanel);
 	public GameFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		

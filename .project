@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>resource/img/gameMain.jpg</name>
-			<type>1</type>
-			<locationURI>PARENT-5-PROJECT_LOC/%EA%B0%9D%EC%A7%802/%EA%B2%8C%EC%9E%84%EC%9D%B4%EB%AF%B8%EC%A7%80/gameMain.jpg</locationURI>
-		</link>
-		<link>
-			<name>resource/sound/mainMusic.wav</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/Downloads/black-box-sudden-attack-edm-15551%20(online-audio-converter.com).wav</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

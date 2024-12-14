@@ -32,16 +32,11 @@ public class SkillPanel extends JPanel {
 	 
 	    // 목숨 감소 메서드
 	 public void loseLife() {
-	        if (lives > 0) {
+	        if (lives >= 0) {
 	            lives--; // 목숨 감소
 	            lifeLabels[lives].setVisible(false); // 배열에서 해당 레이블 숨김 처리
 	        }
 
-	        if (lives == 0) {
-	            SwingUtilities.invokeLater(() -> {
-	                JOptionPane.showMessageDialog(this, "Game Over!", "Game Over", JOptionPane.WARNING_MESSAGE);
-	            });
-	        }
 	    }
 
 	    public int getLives() {

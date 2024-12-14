@@ -37,7 +37,9 @@ public class ScorePanel extends JPanel { // 점수판
         score++;
         updateScore();
     }
-
+    public int getScore() {
+    	return score;
+    }
     // 점수 업데이트 메서드
     private void updateScore() {
         killScoreLabel.setText(Integer.toString(score));
