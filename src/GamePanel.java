@@ -50,7 +50,7 @@ public class GamePanel extends JPanel {
     public GamePanel(ScorePanel scorePanel, SkillPanel skillPanel) {
         this.scorePanel = scorePanel;
         this.skillPanel = skillPanel;
-
+        
         this.setLayout(new BorderLayout());
 
         // 타이머 레이블 초기화
@@ -64,8 +64,9 @@ public class GamePanel extends JPanel {
 
         InputPanel input = new InputPanel();
         this.add(input, BorderLayout.SOUTH);
+        
     }
-
+    
     class GameGroundPanel extends JPanel {
         public GameGroundPanel() {
             setLayout(null);

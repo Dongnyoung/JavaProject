@@ -15,7 +15,7 @@ public class GameFrame extends JFrame{
 	private ScorePanel scorePanel = new ScorePanel();
 	private SkillPanel skillPanel = new SkillPanel();
 	private GamePanel gamePanel = new GamePanel(scorePanel,skillPanel);
-	
+	private EndGamePanel endPanel = new EndGamePanel();
 	
 	
 	public GameFrame() {
@@ -23,11 +23,12 @@ public class GameFrame extends JFrame{
 		
 		setTitle("게임");
 		setSize(1000,700);
-		
+		setLocationRelativeTo(null); // 화면 중앙에 표시
 		makeMenu();
 		makeSplit();
 		this.setResizable(false);
 		setVisible(true);
+		gamePanel.startGame();
 	}
 	
 	private void makeSplit() {
