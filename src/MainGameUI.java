@@ -142,7 +142,7 @@ public class MainGameUI extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
-
+    
     // 배경 이미지를 표시하는 패널
     private class BackgroundPanel extends JPanel {
         private Image backgroundImage;
