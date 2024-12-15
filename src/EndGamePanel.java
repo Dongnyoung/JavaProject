@@ -97,24 +97,24 @@ class EndGamePanel extends JPanel {
     public void updateFinalScore(int score) {
         finalScoreLabel.setText("퇴치 부기 수: " + score); // 최종 점수 업데이트
     }
-
+    //재시작
     private void restartGame() {
         SwingUtilities.invokeLater(() -> {
             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             if (currentFrame != null) {
                 currentFrame.dispose();
             }
-            new GameFrame(difficulty, userName);
+            new GameFrame(difficulty, userName); //난이도와 사용자이름 그대로 
         });
     }
-
+    //메인메뉴로 돌아가기
     private void backToMainMenu() {
         SwingUtilities.invokeLater(() -> {
             JFrame currentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             if (currentFrame != null) {
                 currentFrame.dispose();
             }
-            new MainGameUI(userName);
+            new MainGameUI(userName); //사용자이름만 그대로
         });
     }
 
@@ -123,6 +123,7 @@ class EndGamePanel extends JPanel {
         System.exit(0);
     }
 
+    //이름,퇴치수,난이도저장
     private void saveScoreToFile(String userName, String scoreText) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("rank.txt", true))) {
             writer.write("사용자 이름: " + userName + ", " + scoreText + " (" + difficulty + ")" + "\n");
@@ -132,7 +133,7 @@ class EndGamePanel extends JPanel {
             e.printStackTrace();
         }
     }
-
+    //버튼 호버시 
     private JButton createHoverEffectButton(String text) {
         JButton button = new JButton(text);
         button.setContentAreaFilled(false);

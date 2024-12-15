@@ -10,40 +10,54 @@ import javax.sound.sampled.AudioInputStream;
 import java.io.File;
 
 public class GamePanel extends JPanel {
+	//화면전환
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private EndGamePanel endGamePanel;
 
+    //배경이미지
     private Image backgroundImage;
+    
+    //초기화
     private ScorePanel scorePanel = null;
     private JTextField text = new JTextField(10);
     private LifePanel skillPanel = null;
 
+    //부기의 전체크기 (단어레이블 + 이미지크기) 선언
     private final int monsterWidth = 100;
     private final int monsterHeight = 108;
 
+    //이미지
     private ImageIcon userIcon = new ImageIcon("resource/img/wizard.jpg");
     private ImageIcon attackWizard = new ImageIcon("resource/img/attackWizard.jpg");
+    
+    //사용자
     private JLabel userLabel;
     private JLabel userNameLabel;
 
+    //부기
     private ImageIcon boogiIcon = new ImageIcon("resource/img/boogi.jpg");
     private ImageIcon deathBoogi = new ImageIcon("resource/img/deathboogi.jpg");
     private JLabel[] attackingLabels;
 
+    //단어
     private WordVector wordVec = new WordVector();
     private String[] words;
     private JLabel[] wordLabels;
 
+    //부기를 움직일 스레드 배열
     private MoveBoogiThread[] moveBoogiThreads;
 
+    //배경이미지
     private ImageIcon icon = new ImageIcon("resource/img/image.jpg");
     private Image img = icon.getImage();
 
+    //스레드
     private AttackThread aThread = new AttackThread();
     private TimerThread tThread = new TimerThread();
     private BackgroundMusicThread musicThread = new BackgroundMusicThread();
 
+    //타이머
     private JLabel timerLabel;
     
     //난이도
@@ -62,17 +76,22 @@ public class GamePanel extends JPanel {
         
         JPanel gameContentPanel = new JPanel(new BorderLayout());
 
+        //타이머
         timerLabel = new JLabel("60", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         timerLabel.setForeground(Color.RED);
         gameContentPanel.add(timerLabel, BorderLayout.NORTH);
 
+        //게임 그라운드패널
         GameGroundPanel ground = new GameGroundPanel();
         gameContentPanel.add(ground, BorderLayout.CENTER);
 
+        
+        //단어 입력 패널
         InputPanel input = new InputPanel();
         gameContentPanel.add(input, BorderLayout.SOUTH);
 
+        
         mainPanel.add(gameContentPanel, "Game");
         mainPanel.add(endGamePanel, "EndGame");
 
@@ -80,6 +99,7 @@ public class GamePanel extends JPanel {
         this.add(mainPanel, BorderLayout.CENTER);
     }
 
+    //화면 전환을 위한
     private void switchToEndGame() {
         SwingUtilities.invokeLater(() -> {
             endGamePanel.updateFinalScore(scorePanel.getScore());
@@ -99,8 +119,10 @@ public class GamePanel extends JPanel {
             g.drawImage(img, 0, 0, d.width, d.height, this);
         }
 
+        //변형부기
         private void makeBoogi() {
-            int numBoogis = 60;
+        	//부기를 61마리로 제한
+            int numBoogis = 61;
             attackingLabels = new JLabel[numBoogis];
             wordLabels = new JLabel[numBoogis];
             moveBoogiThreads = new MoveBoogiThread[numBoogis];
@@ -110,6 +132,7 @@ public class GamePanel extends JPanel {
                 int locationY = (int) (Math.random() * 450);
 
                 words[i] = wordVec.get();
+                //단어의 길이가 width를 넘어갈경우 ...으로 표시되기에 맞춤단어(길이를 넘지않는)만 골라서 가져옴
                 if (words[i].length() * 15 > monsterWidth) {
                     i--;
                     continue;
@@ -131,7 +154,8 @@ public class GamePanel extends JPanel {
                 add(attackingLabels[i]);
             }
         }
-
+        
+        //사용자
         private void makeUser() {
             userLabel = new JLabel(userIcon);
             userLabel.setSize(130, 100);
@@ -149,6 +173,7 @@ public class GamePanel extends JPanel {
         }
     }
 
+    //변형부기 생성 스레드
     class AttackThread extends Thread {
     	private boolean isStopped = false;
     	private int time;
@@ -181,7 +206,7 @@ public class GamePanel extends JPanel {
                         time = 1000;
                         break;
                     default:
-                        time = 4000; // 기본값
+                        time = 3000; // 기본값
                 }
                     sleep(time);
                 } catch (InterruptedException e) {
@@ -196,7 +221,7 @@ public class GamePanel extends JPanel {
             }
         }
     }
-
+    //부기의 이동속도 스레드
     class MoveBoogiThread extends Thread {
         private JLabel wordLabel;
         private JLabel attackingLabel;
@@ -231,6 +256,7 @@ public class GamePanel extends JPanel {
             return isStopped;
         }
 
+        
         @Override
         public void run() {
             try {
@@ -242,8 +268,8 @@ public class GamePanel extends JPanel {
                     sleep(sleepTime);
                 }
                 synchronized (this) {
-                    if (attackingLabel.getX() <= 100 && !isStopped()) {
-                        if (skillPanel.getLives() == 0) {
+                    if (attackingLabel.getX() <= 100 && !isStopped()) { //100px이하이고 isStopped이 false면
+                        if (skillPanel.getLives() == 0) { //목숨 0이면
                         	
                             tThread.interrupt();
                             aThread.interrupt();
@@ -253,8 +279,8 @@ public class GamePanel extends JPanel {
                             return;
                         }
 
-                        shakeWindow();
-                        skillPanel.loseLife();
+                        shakeWindow(); //화면 흔들림효과
+                        skillPanel.loseLife(); //목숨감소
                         wordLabel.setVisible(false);
                         attackingLabel.setVisible(false);
                     }
@@ -264,6 +290,7 @@ public class GamePanel extends JPanel {
             }
         }
     }
+    //배경음 스레드
     class BackgroundMusicThread extends Thread {
         private boolean keepPlaying = true;
 
@@ -291,6 +318,7 @@ public class GamePanel extends JPanel {
         }
     }
 
+    //단어입력 패널
     class InputPanel extends JPanel {
         public InputPanel() {
             this.setBackground(Color.RED);
@@ -305,15 +333,15 @@ public class GamePanel extends JPanel {
                     for (int i = 0; i < wordLabels.length; i++) {
                         if (wordLabels[i].isVisible() && inputText.equals(wordLabels[i].getText())) {
                             scorePanel.boogiKillscore();
-                            userLabel.setIcon(attackWizard);
+                            userLabel.setIcon(attackWizard); //단어 입력이 맞으면 이미지바꿈
                             userLabel.setLocation(100, 200);
-                            shakeWindow();
-                            attackingLabels[i].setIcon(deathBoogi);
+                            shakeWindow(); //화면흔들림
+                            attackingLabels[i].setIcon(deathBoogi); //부기가 불 주문을 맞고 활활탐
 
                             if (moveBoogiThreads[i] != null) {
                                 moveBoogiThreads[i].stopMoving();
                             }
-
+                            //효과음
                             new Thread(() -> {
                                 try {
                                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("resource/sound/deathSound.wav"));
@@ -360,12 +388,12 @@ public class GamePanel extends JPanel {
     class TimerThread extends Thread {
         @Override
         public void run() {
-            int timeLeft = 60;
+            int timeLeft = 60; //타이머
             try {
                 while (timeLeft > 0) {
                     int finalTimeLeft = timeLeft;
                     SwingUtilities.invokeLater(() -> timerLabel.setText("" + finalTimeLeft));
-                    sleep(1000);
+                    sleep(1000); //1초마다 줄어듬
                     timeLeft--;
                 }
                 // 타이머 종료 시 모든 스레드 종료
@@ -431,8 +459,9 @@ public class GamePanel extends JPanel {
     }
     
     public void startGame() {
-    	System.out.println("Difficulty in GameFrame: " + difficulty); 
-    	System.out.println("userName in GameFrame: " + userName); 
+    	//디버깅을 위한
+    	//System.out.println("Difficulty in GameFrame: " + difficulty); 
+    	//System.out.println("userName in GameFrame: " + userName); 
 
         musicThread.start();
         tThread.start();

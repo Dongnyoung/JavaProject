@@ -60,7 +60,7 @@ public class MainGameUI extends JFrame {
         setVisible(true);
     }
     public String getDifficulty() {
-        return difficulty;
+        return difficulty; //난이도 리턴
     }
     // 사용자 이름 입력을 위한 대화창
     private void showNameInputDialog() {
@@ -101,11 +101,11 @@ public class MainGameUI extends JFrame {
 
             // 입력 필드 설정
             nameField = new JTextField();
-            nameField.setFont(new Font("맑은 고딕", Font.PLAIN, 16)); // 글씨 크기 증가
+            nameField.setFont(new Font("맑은 고딕", Font.PLAIN, 16)); // 글씨 크기 
             nameField.setHorizontalAlignment(JTextField.CENTER);
             // 확인 버튼 설정
             JButton okButton = new JButton("확인");
-            okButton.setFont(new Font("맑은 고딕", Font.BOLD, 16)); // 글씨 크기 증가
+            okButton.setFont(new Font("맑은 고딕", Font.BOLD, 16)); // 글씨 크기 
             okButton.addActionListener(e -> {
                 userName = nameField.getText().trim();
                 dispose();
@@ -203,6 +203,7 @@ public class MainGameUI extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
+        //게임시작
         JButton startButton = createHoverEffectButton("게임 시작", "resource/sound/hover.wav");
         startButton.addActionListener(e -> {
             new GameFrame(difficulty, userName);
@@ -213,21 +214,25 @@ public class MainGameUI extends JFrame {
         gbc.gridy = 0;
         buttonPanel.add(startButton, gbc);
 
+        //난이도
         JButton difficultyButton = createHoverEffectButton("난이도 설정", "resource/sound/hover.wav");
         difficultyButton.addActionListener(e -> showDifficultyDialog());
         gbc.gridy = 1;
         buttonPanel.add(difficultyButton, gbc);
-
+        
+        //도움말
         JButton helpButton = createHoverEffectButton("게임 도움말", "resource/sound/hover.wav");
         helpButton.addActionListener(e -> new HelpFrame());
         gbc.gridy = 2;
         buttonPanel.add(helpButton, gbc);
 
+        //점수판
         JButton scoreButton = createHoverEffectButton("점수판", "resource/sound/hover.wav");
         scoreButton.addActionListener(e -> new ScoreboardFrame());
         gbc.gridy = 3;
         buttonPanel.add(scoreButton, gbc);
 
+        //게임종료
         JButton exitButton = createHoverEffectButton("게임 종료", "resource/sound/hover.wav");
         exitButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(this,
@@ -241,6 +246,7 @@ public class MainGameUI extends JFrame {
 
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
+        //제작자
         JLabel footerLabel = new JLabel("© 2024 Final project by Dongnyoung", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         footerLabel.setForeground(Color.WHITE);
@@ -262,14 +268,14 @@ public class MainGameUI extends JFrame {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 글꼴 크기 증가
+                button.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 글꼴 크기 
                 button.setForeground(Color.YELLOW); // 텍스트 색상 변경
                 playHoverSound(soundFilePath);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setFont(new Font("맑은 고딕", Font.BOLD, 24)); // 기본 글꼴로 복원
+                button.setFont(new Font("맑은 고딕", Font.BOLD, 24)); // 기본 글꼴
                 button.setForeground(Color.WHITE); // 기본 텍스트 색상 복원
             }
         });

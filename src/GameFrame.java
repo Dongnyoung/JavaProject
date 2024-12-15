@@ -30,11 +30,15 @@ public class GameFrame extends JFrame {
         makeSplit();
         this.setResizable(false);
         setVisible(true);
-        System.out.println("Difficulty in GameFrame: " + difficulty);
-        System.out.println("user in GameFrame: " + userName);
+        
+        //디버깅을 위한
+        //System.out.println("Difficulty in GameFrame: " + difficulty);
+        //System.out.println("user in GameFrame: " + userName);
+        
         gamePanel.startGame();
     }
 
+    //창나누기
     private void makeSplit() {
         JSplitPane hPane = new JSplitPane();
         hPane.setDividerLocation(800);
@@ -55,6 +59,7 @@ public class GameFrame extends JFrame {
     private void makeMenu() {
         JMenuBar mb = new JMenuBar();
         this.setJMenuBar(mb);
+        
         /*
         // 게임 중단 버튼
         JMenuItem stopItem = new JMenuItem("Stop Game");
@@ -71,6 +76,7 @@ public class GameFrame extends JFrame {
         resumeItem.addActionListener(e -> gamePanel.resumeGame());
         mb.add(resumeItem);
         */
+        
         // 게임 종료 버튼
         JMenuItem exitItem = new JMenuItem("Not Save Exit");
         exitItem.setIcon(new javax.swing.ImageIcon("resource/img/exit.jpg")); // 아이콘 추가
