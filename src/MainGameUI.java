@@ -12,7 +12,7 @@ public class MainGameUI extends JFrame {
     private JPanel cardPanel;
     private BackgroundMusicThread musicThread; // 배경 음악 스레드
     private String difficulty = "쉬움";
-    private String userName;
+    private String userName=null;
     public MainGameUI() {
         setTitle("게임 메인 화면");
         setSize(1000, 700);
@@ -20,7 +20,8 @@ public class MainGameUI extends JFrame {
         setLocationRelativeTo(null); // 화면 중앙에 표시
 
         // 사용자 이름 입력
-        showNameInputDialog();
+        if(userName==null)
+        	showNameInputDialog();
         // 배경 음악 스레드 시작
         musicThread = new BackgroundMusicThread("resource/sound/mainMusic.wav");
         musicThread.start();
@@ -36,7 +37,28 @@ public class MainGameUI extends JFrame {
         add(cardPanel);
         setVisible(true);
     }
+    public MainGameUI(String userName) {
+        setTitle("게임 메인 화면");
+        setSize(1000, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
+        this.userName = userName;
+        
+        // 배경 음악 스레드 시작
+        musicThread = new BackgroundMusicThread("resource/sound/mainMusic.wav");
+        musicThread.start();
 
+        // CardLayout과 메인 패널 설정
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+
+        // 메인 화면 (첫 화면)
+        JPanel mainPanel = createMainPanel();
+        cardPanel.add(mainPanel, "Main");
+
+        add(cardPanel);
+        setVisible(true);
+    }
     public String getDifficulty() {
         return difficulty;
     }
@@ -116,14 +138,41 @@ public class MainGameUI extends JFrame {
         JPanel mainPanel = new BackgroundPanel("resource/img/main.jpg");
         mainPanel.setLayout(new BorderLayout());
 
-        // 상단 패널: 타이틀과 음소거 버튼
+        // 상단 패널
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
 
+        // 제목 라벨
+        JLabel titleLabel = new JLabel("Kill the Boogi", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 40)); // 글꼴 크기
+        titleLabel.setForeground(Color.RED); // 텍스트 색상
+
+        // 제목 효과를 위한 패널
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.setOpaque(false);
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0)); // 상단/하단 패딩 추가
+
+        // 시각화를 위한 배경 라벨
+        JLabel backgroundTitle = new JLabel();
+        backgroundTitle.setOpaque(true);
+        backgroundTitle.setBackground(new Color(0, 0, 0, 150)); // 반투명 배경
+        backgroundTitle.setBorder(BorderFactory.createLineBorder(Color.RED, 5)); // 테두리
+        backgroundTitle.setLayout(new BorderLayout());
+        backgroundTitle.setPreferredSize(new Dimension(0, 80)); // 높이 설정
+
+        backgroundTitle.add(titleLabel, BorderLayout.CENTER); // 제목 중앙 배치
+        titlePanel.add(backgroundTitle, BorderLayout.CENTER);
+
+        // 제목 아래 음소거 버튼 패널
+        JPanel muteButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        muteButtonPanel.setOpaque(false);
+
+        // 음소거 버튼
         JButton muteButton = new JButton(new ImageIcon("resource/img/unmute.jpg")); // 음소거 이미지
         muteButton.setBorderPainted(false);
         muteButton.setContentAreaFilled(false);
         muteButton.setFocusPainted(false);
+        muteButton.setPreferredSize(new Dimension(50, 50)); // 버튼 크기 고정
 
         muteButton.addActionListener(e -> {
             if (musicThread.isPlaying()) {
@@ -135,14 +184,15 @@ public class MainGameUI extends JFrame {
             }
         });
 
-        topPanel.add(muteButton, BorderLayout.WEST);
+        muteButtonPanel.add(muteButton);
 
-        JLabel titleLabel = new JLabel("...Kill the Boogi..", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        titleLabel.setForeground(Color.RED);
-        topPanel.add(titleLabel, BorderLayout.CENTER);
+        // 제목과 음소거 버튼을 포함하는 패널
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        headerPanel.add(titlePanel, BorderLayout.NORTH); // 제목 패널 추가
+        headerPanel.add(muteButtonPanel, BorderLayout.WEST); // 음소거 버튼 추가
 
-        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
 
         // 중앙 버튼 패널
         JPanel buttonPanel = new JPanel(new GridBagLayout()); // GridBagLayout 사용

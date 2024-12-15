@@ -17,7 +17,7 @@ public class ScorePanel extends JPanel { // 점수판
         JLabel iconLabel = new JLabel(boogiIcon); // 부기 이미지
         leftPanel.add(iconLabel);
 
-        killScoreLabel.setFont(new Font("Arial", Font.BOLD, 20)); // 점수 텍스트 크기 설정
+        killScoreLabel.setFont(new Font("Arial", Font.BOLD, 40)); // 점수 텍스트 크기 설정
         leftPanel.add(killScoreLabel);
 
         this.add(leftPanel, BorderLayout.WEST);

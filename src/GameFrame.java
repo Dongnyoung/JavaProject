@@ -12,7 +12,7 @@ public class GameFrame extends JFrame {
     private String difficulty;
     private String userName;
     private ScorePanel scorePanel = new ScorePanel();
-    private SkillPanel skillPanel = new SkillPanel();
+    private LifePanel skillPanel = new LifePanel();
     private EndGamePanel endPanel; // 생성자에서 초기화
     private GamePanel gamePanel;  // 생성자에서 초기화
 

@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
 
-public class SkillPanel extends JPanel {
+public class LifePanel extends JPanel {
 
     private int lives = 5; // 초기 목숨 개수
     private JLabel[] lifeLabels; // 목숨을 표시할 레이블 배열
@@ -9,7 +9,7 @@ public class SkillPanel extends JPanel {
     
     private Image backgroundImage = new ImageIcon("resource/img/lifeBackground.jpg").getImage(); // 배경 이미지 경로
 
-    public SkillPanel() {
+    public LifePanel() {
         // Panel 기본 레이아웃 설정
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // 세로로 배치
         this.setPreferredSize(new Dimension(600, 150)); // SkillPanel 크기 조정

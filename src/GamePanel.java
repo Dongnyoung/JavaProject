@@ -17,7 +17,7 @@ public class GamePanel extends JPanel {
     private Image backgroundImage;
     private ScorePanel scorePanel = null;
     private JTextField text = new JTextField(10);
-    private SkillPanel skillPanel = null;
+    private LifePanel skillPanel = null;
 
     private final int monsterWidth = 100;
     private final int monsterHeight = 108;
@@ -51,7 +51,7 @@ public class GamePanel extends JPanel {
     //사용자이름
     private String userName;
     
-    public GamePanel(ScorePanel scorePanel, SkillPanel skillPanel, EndGamePanel endGamePanel,String difficulty,String userName) {
+    public GamePanel(ScorePanel scorePanel, LifePanel skillPanel, EndGamePanel endGamePanel,String difficulty,String userName) {
         this.scorePanel = scorePanel;
         this.skillPanel = skillPanel;
         this.endGamePanel = endGamePanel;
@@ -200,10 +200,10 @@ public class GamePanel extends JPanel {
     class MoveBoogiThread extends Thread {
         private JLabel wordLabel;
         private JLabel attackingLabel;
-        private SkillPanel skillPanel;
+        private LifePanel skillPanel;
         private boolean isStopped = false;
         private int sleepTime;
-        public MoveBoogiThread(JLabel wordLabel, JLabel attackingLabel, SkillPanel skillPanel) {
+        public MoveBoogiThread(JLabel wordLabel, JLabel attackingLabel, LifePanel skillPanel) {
             this.wordLabel = wordLabel;
             this.attackingLabel = attackingLabel;
             this.skillPanel = skillPanel;

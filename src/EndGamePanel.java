@@ -34,9 +34,9 @@ class EndGamePanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER; // 중앙 정렬
 
         // 마법사 이미지
-        JLabel wizardLabel = new JLabel(new ImageIcon(new ImageIcon("resource/img/wizard.jpg")
+        JLabel wizardLabel = new JLabel(new ImageIcon(new ImageIcon("resource/img/gameOverUser.jpg")
                 .getImage()
-                .getScaledInstance(100, 100, Image.SCALE_SMOOTH))); // 마법사 이미지 크기 조정
+                .getScaledInstance(150, 150, Image.SCALE_SMOOTH))); // 마법사 이미지 크기 조정
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2; // 두 칸 차지
@@ -114,7 +114,7 @@ class EndGamePanel extends JPanel {
             if (currentFrame != null) {
                 currentFrame.dispose();
             }
-            new MainGameUI();
+            new MainGameUI(userName);
         });
     }
 
