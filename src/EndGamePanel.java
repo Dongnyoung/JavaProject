@@ -25,45 +25,45 @@ class EndGamePanel extends JPanel {
         titleLabel.setForeground(Color.RED);
         this.add(titleLabel, BorderLayout.NORTH);
 
-        // 중앙 패널: 사용자 이름과 점수, 퇴치 부기 수
+     // 중앙 패널: 사용자 이름과 점수, 퇴치 부기 수
         JPanel infoPanel = new JPanel(new GridBagLayout());
         infoPanel.setOpaque(false); // 투명 배경
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER; // 중앙 정렬
+
         // 마법사 이미지
         JLabel wizardLabel = new JLabel(new ImageIcon(new ImageIcon("resource/img/wizard.jpg")
                 .getImage()
-                .getScaledInstance(80, 80, Image.SCALE_SMOOTH))); // 마법사 이미지 크기 조정
+                .getScaledInstance(100, 100, Image.SCALE_SMOOTH))); // 마법사 이미지 크기 조정
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 2; // 두 칸 차지
         infoPanel.add(wizardLabel, gbc);
-        
+
         // 사용자 이름
         JLabel userNameLabel = new JLabel("사용자 이름: " + userName, SwingConstants.LEFT);
-        userNameLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        userNameLabel.setFont(new Font("맑은 고딕", Font.BOLD, 25)); // 폰트 크기 확대
         userNameLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2; // 두 칸 차지
         infoPanel.add(userNameLabel, gbc);
 
-        // 부기 이미지
-        JLabel boogiLabel = new JLabel(new ImageIcon(new ImageIcon("resource/img/boogi.jpg")
-                .getImage()
-                .getScaledInstance(80, 80, Image.SCALE_SMOOTH))); // 부기 이미지 크기 조정
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        infoPanel.add(boogiLabel, gbc);
+        
 
         // 퇴치 부기 수
         finalScoreLabel = new JLabel("퇴치 부기 수: 0", SwingConstants.LEFT);
-        finalScoreLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+        finalScoreLabel.setFont(new Font("맑은 고딕", Font.BOLD, 25)); // 폰트 크기 확대
         finalScoreLabel.setForeground(Color.WHITE);
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1; // 한 칸만 차지
         infoPanel.add(finalScoreLabel, gbc);
 
         this.add(infoPanel, BorderLayout.CENTER);
+
 
         // 하단 버튼 패널
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 20, 0));

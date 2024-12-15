@@ -72,7 +72,7 @@ public class GameFrame extends JFrame {
         mb.add(resumeItem);
         */
         // 게임 종료 버튼
-        JMenuItem exitItem = new JMenuItem("Exit");
+        JMenuItem exitItem = new JMenuItem("Not Save Exit");
         exitItem.setIcon(new javax.swing.ImageIcon("resource/img/exit.jpg")); // 아이콘 추가
         exitItem.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14)); // 폰트 설정
         exitItem.setBackground(java.awt.Color.RED); // 배경색 설정
@@ -86,7 +86,7 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int response = javax.swing.JOptionPane.showConfirmDialog(
                     GameFrame.this,
-                    "Are you sure you want to exit?",
+                    "저장하지 않고 나가시겠습니까?",
                     "Exit Game",
                     javax.swing.JOptionPane.YES_NO_OPTION,
                     javax.swing.JOptionPane.WARNING_MESSAGE

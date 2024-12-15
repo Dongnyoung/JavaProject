@@ -191,7 +191,7 @@ public class MainGameUI extends JFrame {
 
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        JLabel footerLabel = new JLabel("© 2024 My Game Company", SwingConstants.CENTER);
+        JLabel footerLabel = new JLabel("© 2024 Final project by Dongnyoung", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         footerLabel.setForeground(Color.WHITE);
         mainPanel.add(footerLabel, BorderLayout.SOUTH);

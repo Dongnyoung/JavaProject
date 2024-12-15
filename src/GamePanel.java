@@ -150,7 +150,15 @@ public class GamePanel extends JPanel {
     }
 
     class AttackThread extends Thread {
+    	private boolean isStopped = false;
     	private int time;
+    	public synchronized void stopAttack() {
+            isStopped = true;
+        }
+
+        private synchronized boolean isStopped() {
+            return isStopped;
+        }
         @Override
         public void run() {
             userLabel.setVisible(true);
@@ -178,6 +186,12 @@ public class GamePanel extends JPanel {
                     sleep(time);
                 } catch (InterruptedException e) {
                     return;
+                }
+            }
+         // 실행 중인 모든 MoveBoogiThread 중단
+            for (MoveBoogiThread thread : moveBoogiThreads) {
+                if (thread != null) {
+                    thread.stopMoving();
                 }
             }
         }
@@ -230,6 +244,7 @@ public class GamePanel extends JPanel {
                 synchronized (this) {
                     if (attackingLabel.getX() <= 100 && !isStopped()) {
                         if (skillPanel.getLives() == 0) {
+                        	
                             tThread.interrupt();
                             aThread.interrupt();
                             musicThread.stopMusic();
@@ -353,7 +368,14 @@ public class GamePanel extends JPanel {
                     sleep(1000);
                     timeLeft--;
                 }
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Game Over!"));
+                // 타이머 종료 시 모든 스레드 종료
+                aThread.stopAttack(); // AttackThread 멈춤
+                for (MoveBoogiThread thread : moveBoogiThreads) {
+                    if (thread != null) {
+                        thread.stopMoving(); // 모든 MoveBoogiThread 멈춤
+                    }
+                }
+                tThread.interrupt();
                 aThread.interrupt();
                 musicThread.stopMusic();
 
