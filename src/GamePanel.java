@@ -25,6 +25,7 @@ public class GamePanel extends JPanel {
     private ImageIcon userIcon = new ImageIcon("resource/img/wizard.jpg");
     private ImageIcon attackWizard = new ImageIcon("resource/img/attackWizard.jpg");
     private JLabel userLabel;
+    private JLabel userNameLabel;
 
     private ImageIcon boogiIcon = new ImageIcon("resource/img/boogi.jpg");
     private ImageIcon deathBoogi = new ImageIcon("resource/img/deathboogi.jpg");
@@ -44,15 +45,21 @@ public class GamePanel extends JPanel {
     private BackgroundMusicThread musicThread = new BackgroundMusicThread();
 
     private JLabel timerLabel;
-
-    public GamePanel(ScorePanel scorePanel, SkillPanel skillPanel, EndGamePanel endGamePanel) {
+    
+    //난이도
+    private String difficulty;
+    //사용자이름
+    private String userName;
+    
+    public GamePanel(ScorePanel scorePanel, SkillPanel skillPanel, EndGamePanel endGamePanel,String difficulty,String userName) {
         this.scorePanel = scorePanel;
         this.skillPanel = skillPanel;
         this.endGamePanel = endGamePanel;
-
+        this.difficulty = difficulty;
+        this.userName = userName;
         this.cardLayout = new CardLayout();
         this.mainPanel = new JPanel(cardLayout);
-
+        
         JPanel gameContentPanel = new JPanel(new BorderLayout());
 
         timerLabel = new JLabel("60", SwingConstants.CENTER);
@@ -131,13 +138,23 @@ public class GamePanel extends JPanel {
             userLabel.setLocation(10, 200);
             userLabel.setVisible(false);
             add(userLabel);
+            userNameLabel = new JLabel(userName);
+            userNameLabel.setForeground(Color.white);
+            userNameLabel.setFont(new Font("고딕", Font.BOLD, 20));
+            userNameLabel.setSize(100, 20);
+            userNameLabel.setLocation(10, 320);
+            userNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            userNameLabel.setVisible(false);
+            add(userNameLabel);
         }
     }
 
     class AttackThread extends Thread {
+    	private int time;
         @Override
         public void run() {
             userLabel.setVisible(true);
+            userNameLabel.setVisible(true);
             for (int i = 0; i < attackingLabels.length; i++) {
                 try {
                     wordLabels[i].setVisible(true);
@@ -145,8 +162,20 @@ public class GamePanel extends JPanel {
 
                     moveBoogiThreads[i] = new MoveBoogiThread(wordLabels[i], attackingLabels[i], skillPanel);
                     moveBoogiThreads[i].start();
-
-                    sleep(2000);
+                    switch (difficulty) {
+                    case "쉬움":
+                        time = 3000;
+                        break;
+                    case "보통":
+                        time = 2000;
+                        break;
+                    case "어려움":
+                        time = 1000;
+                        break;
+                    default:
+                        time = 4000; // 기본값
+                }
+                    sleep(time);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -159,11 +188,25 @@ public class GamePanel extends JPanel {
         private JLabel attackingLabel;
         private SkillPanel skillPanel;
         private boolean isStopped = false;
-
+        private int sleepTime;
         public MoveBoogiThread(JLabel wordLabel, JLabel attackingLabel, SkillPanel skillPanel) {
             this.wordLabel = wordLabel;
             this.attackingLabel = attackingLabel;
             this.skillPanel = skillPanel;
+            // 난이도에 따라 sleepTime 설정
+            switch (difficulty) {
+                case "쉬움":
+                    sleepTime = 400;
+                    break;
+                case "보통":
+                    sleepTime = 200;
+                    break;
+                case "어려움":
+                    sleepTime = 100;
+                    break;
+                default:
+                    sleepTime = 400; // 기본값
+            }
         }
 
         public synchronized void stopMoving() {
@@ -182,7 +225,7 @@ public class GamePanel extends JPanel {
                         wordLabel.setLocation(wordLabel.getX() - 10, wordLabel.getY());
                         attackingLabel.setLocation(attackingLabel.getX() - 10, attackingLabel.getY());
                     }
-                    sleep(100);
+                    sleep(sleepTime);
                 }
                 synchronized (this) {
                     if (attackingLabel.getX() <= 100 && !isStopped()) {
@@ -364,8 +407,11 @@ public class GamePanel extends JPanel {
             }
         });
     }
-
+    
     public void startGame() {
+    	System.out.println("Difficulty in GameFrame: " + difficulty); 
+    	System.out.println("userName in GameFrame: " + userName); 
+
         musicThread.start();
         tThread.start();
         aThread.start();

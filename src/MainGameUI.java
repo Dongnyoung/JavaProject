@@ -3,19 +3,24 @@ import java.awt.event.*;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MainGameUI extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private BackgroundMusicThread musicThread; // 배경 음악 스레드
-
+    private String difficulty = "쉬움";
+    private String userName;
     public MainGameUI() {
         setTitle("게임 메인 화면");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // 화면 중앙에 표시
 
+        // 사용자 이름 입력
+        showNameInputDialog();
         // 배경 음악 스레드 시작
         musicThread = new BackgroundMusicThread("resource/sound/mainMusic.wav");
         musicThread.start();
@@ -32,99 +37,194 @@ public class MainGameUI extends JFrame {
         setVisible(true);
     }
 
-    // 메인 화면 구성
+    public String getDifficulty() {
+        return difficulty;
+    }
+    // 사용자 이름 입력을 위한 대화창
+    private void showNameInputDialog() {
+        NameInputDialog nameDialog = new NameInputDialog(this);
+        userName = nameDialog.getUserName();
+        if (userName == null || userName.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "사용자 이름을 입력해야 게임을 시작할 수 있습니다.", 
+                "이름 입력 필요", JOptionPane.WARNING_MESSAGE);
+            System.exit(0); // 이름 입력이 없으면 프로그램 종료
+        }
+    }
+    // 버튼 호버 효과음 재생
+    private void playHoverSound(String soundFilePath) {
+        try {
+            File soundFile = new File(soundFilePath);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    // 사용자 이름 입력창
+    class NameInputDialog extends JDialog {
+        private JTextField nameField;
+        private String userName;
+
+        public NameInputDialog(JFrame parent) {
+            super(parent, "사용자 이름 입력", true);
+            setSize(400, 300); // 크기 조정
+            setLayout(new BorderLayout());
+            setLocationRelativeTo(parent);
+
+            // 프롬프트 라벨 설정
+            JLabel promptLabel = new JLabel("사용자의 이름을 입력하세요:", SwingConstants.CENTER);
+            promptLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18)); // 글씨 크기 증가
+
+            // 입력 필드 설정
+            nameField = new JTextField();
+            nameField.setFont(new Font("맑은 고딕", Font.PLAIN, 16)); // 글씨 크기 증가
+            nameField.setHorizontalAlignment(JTextField.CENTER);
+            // 확인 버튼 설정
+            JButton okButton = new JButton("확인");
+            okButton.setFont(new Font("맑은 고딕", Font.BOLD, 16)); // 글씨 크기 증가
+            okButton.addActionListener(e -> {
+                userName = nameField.getText().trim();
+                dispose();
+            });
+
+            // 마법사 이미지를 보여줄 라벨 설정
+            ImageIcon wizardIcon = new ImageIcon("resource/img/wizard.jpg"); // 마법사 이미지 경로
+            JLabel wizardLabel = new JLabel(wizardIcon);
+            wizardLabel.setHorizontalAlignment(SwingConstants.CENTER); // 중앙 정렬
+
+            // 레이아웃 설정
+            JPanel inputPanel = new JPanel(new BorderLayout());
+            inputPanel.add(promptLabel, BorderLayout.NORTH);
+            inputPanel.add(nameField, BorderLayout.CENTER);
+            inputPanel.add(okButton, BorderLayout.SOUTH);
+
+            // 마법사 이미지와 입력 패널을 통합
+            add(wizardLabel, BorderLayout.CENTER); // 마법사 이미지를 중앙에 배치
+            add(inputPanel, BorderLayout.SOUTH); // 입력 필드와 버튼을 하단에 배치
+
+            setVisible(true);
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+    }
+
     private JPanel createMainPanel() {
-        // 배경 이미지를 사용하는 패널
         JPanel mainPanel = new BackgroundPanel("resource/img/main.jpg");
         mainPanel.setLayout(new BorderLayout());
 
-        // 상단 타이틀
-        JLabel titleLabel = new JLabel("부기를 퇴치하라..!", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 32));
-        titleLabel.setForeground(Color.WHITE); // 글자 색상 설정
-        mainPanel.add(titleLabel, BorderLayout.NORTH);
+        // 상단 패널: 타이틀과 음소거 버튼
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false);
 
-        // 버튼 레이아웃
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
-        buttonPanel.setOpaque(false); // 버튼 패널 배경 투명화
+        JButton muteButton = new JButton(new ImageIcon("resource/img/unmute.jpg")); // 음소거 이미지
+        muteButton.setBorderPainted(false);
+        muteButton.setContentAreaFilled(false);
+        muteButton.setFocusPainted(false);
 
-        // "게임 시작" 버튼
-        JButton startButton = createHoverEffectButton("게임 시작");
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new GameFrame(); // GameFrame 실행
-                musicThread.stopMusic(); // 음악 종료
-                dispose(); // 현재 MainGameUI 창 닫기
+        muteButton.addActionListener(e -> {
+            if (musicThread.isPlaying()) {
+                musicThread.stopMusic();
+                muteButton.setIcon(new ImageIcon("resource/img/mute.jpg"));
+            } else {
+                musicThread.playMusic();
+                muteButton.setIcon(new ImageIcon("resource/img/unmute.jpg"));
             }
         });
-        buttonPanel.add(startButton);
 
-        // "게임 도움말" 버튼
-        JButton helpButton = createHoverEffectButton("게임 도움말");
-        helpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showHelpDialog();
+        topPanel.add(muteButton, BorderLayout.WEST);
+
+        JLabel titleLabel = new JLabel("...Kill the Boogi..", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        titleLabel.setForeground(Color.RED);
+        topPanel.add(titleLabel, BorderLayout.CENTER);
+
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+
+        // 중앙 버튼 패널
+        JPanel buttonPanel = new JPanel(new GridBagLayout()); // GridBagLayout 사용
+        buttonPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // 버튼 간격 추가
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        JButton startButton = createHoverEffectButton("게임 시작", "resource/sound/hover.wav");
+        startButton.addActionListener(e -> {
+            new GameFrame(difficulty, userName);
+            musicThread.stopMusic();
+            dispose();
+        });
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        buttonPanel.add(startButton, gbc);
+
+        JButton difficultyButton = createHoverEffectButton("난이도 설정", "resource/sound/hover.wav");
+        difficultyButton.addActionListener(e -> showDifficultyDialog());
+        gbc.gridy = 1;
+        buttonPanel.add(difficultyButton, gbc);
+
+        JButton helpButton = createHoverEffectButton("게임 도움말", "resource/sound/hover.wav");
+        helpButton.addActionListener(e -> new HelpFrame());
+        gbc.gridy = 2;
+        buttonPanel.add(helpButton, gbc);
+
+        JButton scoreButton = createHoverEffectButton("점수판", "resource/sound/hover.wav");
+        scoreButton.addActionListener(e -> new ScoreboardFrame());
+        gbc.gridy = 3;
+        buttonPanel.add(scoreButton, gbc);
+
+        JButton exitButton = createHoverEffectButton("게임 종료", "resource/sound/hover.wav");
+        exitButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "게임을 종료하시겠습니까?", "게임 종료", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
             }
         });
-        buttonPanel.add(helpButton);
-
-        // "난이도 설정" 버튼
-        JButton difficultyButton = createHoverEffectButton("난이도 설정");
-        difficultyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showDifficultyDialog();
-            }
-        });
-        buttonPanel.add(difficultyButton);
+        gbc.gridy = 4;
+        buttonPanel.add(exitButton, gbc);
 
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
-        // 하단 정보
         JLabel footerLabel = new JLabel("© 2024 My Game Company", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-        footerLabel.setForeground(Color.WHITE); // 글자 색상 설정
+        footerLabel.setForeground(Color.WHITE);
         mainPanel.add(footerLabel, BorderLayout.SOUTH);
 
         return mainPanel;
     }
 
-    private JButton createHoverEffectButton(String text) {
+
+    private JButton createHoverEffectButton(String text,String soundFilePath) {
         JButton button = new JButton(text);
         button.setContentAreaFilled(false); // 버튼 배경 투명
         button.setFocusPainted(false); // 포커스 테두리 제거
         button.setBorderPainted(false); // 버튼 테두리 제거
-        button.setFont(new Font("맑은 고딕", Font.BOLD, 20)); // 기본 글꼴 설정
+        button.setFont(new Font("맑은 고딕", Font.BOLD, 24)); // 기본 글꼴 설정
         button.setForeground(Color.WHITE); // 기본 글자 색상 설정
 
         // 마우스 이벤트 추가
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setFont(new Font("맑은 고딕", Font.BOLD, 28)); // 글꼴 크기 증가
+                button.setFont(new Font("맑은 고딕", Font.BOLD, 30)); // 글꼴 크기 증가
                 button.setForeground(Color.YELLOW); // 텍스트 색상 변경
+                playHoverSound(soundFilePath);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setFont(new Font("맑은 고딕", Font.BOLD, 20)); // 기본 글꼴로 복원
+                button.setFont(new Font("맑은 고딕", Font.BOLD, 24)); // 기본 글꼴로 복원
                 button.setForeground(Color.WHITE); // 기본 텍스트 색상 복원
             }
         });
 
         return button;
-    }
-
-    private void showHelpDialog() {
-        JOptionPane.showMessageDialog(this,
-                "게임 도움말:\n" +
-                        "1. 방향키로 캐릭터를 움직입니다.\n" +
-                        "2. 목표를 달성하세요!\n" +
-                        "3. 즐겁게 플레이하세요!",
-                "게임 도움말",
-                JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showDifficultyDialog() {
@@ -136,13 +236,14 @@ public class MainGameUI extends JFrame {
                 JOptionPane.QUESTION_MESSAGE,
                 null, options, options[1]);
         if (choice >= 0) {
+            difficulty = options[choice];
             JOptionPane.showMessageDialog(this,
                     "선택된 난이도: " + options[choice],
                     "난이도 설정",
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     // 배경 이미지를 표시하는 패널
     private class BackgroundPanel extends JPanel {
         private Image backgroundImage;
@@ -165,9 +266,9 @@ public class MainGameUI extends JFrame {
         }
     }
 
-    // 배경 음악 스레드 클래스
     private class BackgroundMusicThread extends Thread {
-        private String musicFilePath;
+        private final String musicFilePath;
+        private Clip clip;
         private boolean keepPlaying = true;
 
         public BackgroundMusicThread(String musicFilePath) {
@@ -179,21 +280,34 @@ public class MainGameUI extends JFrame {
             try {
                 File musicFile = new File(musicFilePath);
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(musicFile);
-                Clip clip = AudioSystem.getClip();
+                clip = AudioSystem.getClip();
                 clip.open(audioStream);
                 clip.loop(Clip.LOOP_CONTINUOUSLY); // 반복 재생
                 while (keepPlaying) {
-                    Thread.sleep(100);
+                    Thread.sleep(100); // 스레드 유지
                 }
-                clip.stop();
-                clip.close();
+                clip.stop(); // 음악 정지
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public void stopMusic() {
-            keepPlaying = false;
+        public synchronized void stopMusic() {
+            if (clip != null && clip.isRunning()) {
+                clip.stop(); // 재생 중이면 정지
+            }
+        }
+
+        public synchronized void playMusic() {
+            if (clip != null) {
+                clip.setFramePosition(0); // 재생 위치를 처음으로 초기화
+                clip.start(); // 재생 시작
+                clip.loop(Clip.LOOP_CONTINUOUSLY); // 반복 재생
+            }
+        }
+
+        public synchronized boolean isPlaying() {
+            return clip != null && clip.isRunning();
         }
     }
 
@@ -201,3 +315,189 @@ public class MainGameUI extends JFrame {
         new MainGameUI();
     }
 }
+
+//게임 도움말 창
+class HelpFrame extends JFrame {
+
+ public HelpFrame() {
+     setTitle("게임 도움말");
+     setSize(700, 600); // 창 크기 조정
+     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+     setLocationRelativeTo(null); // 화면 중앙에 표시
+
+     JPanel contentPanel = new JPanel(new BorderLayout());
+     contentPanel.setBackground(Color.BLACK); // 배경색 설정
+
+     // 상단: 캐릭터 설명
+     JPanel characterPanel = new JPanel();
+     characterPanel.setBackground(Color.BLACK);
+     characterPanel.setLayout(new BoxLayout(characterPanel, BoxLayout.Y_AXIS));
+
+     // 마법사 설명
+     JLabel wizardLabel = new JLabel("마법사(user): 부기를 퇴치하기 위해 단어주문을 외치는 용감한 주인공.");
+     wizardLabel.setForeground(Color.WHITE);
+     wizardLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+     wizardLabel.setIcon(new ImageIcon(new ImageIcon("resource/img/wizard.jpg")
+             .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH))); // 마법사 이미지 추가 및 크기 조정
+     wizardLabel.setHorizontalTextPosition(SwingConstants.RIGHT); // 텍스트를 이미지 오른쪽에 배치
+     wizardLabel.setVerticalTextPosition(SwingConstants.CENTER); // 텍스트를 이미지 수평 중앙에 맞춤
+     wizardLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+     characterPanel.add(wizardLabel);
+     characterPanel.add(Box.createRigidArea(new Dimension(0, 20))); // 간격 추가
+
+     // 부기 설명
+     JLabel boogiLabel = new JLabel("변형부기(moster): 침략해온 몬스터로, 단어를 입력해 퇴치해야 합니다.");
+     boogiLabel.setForeground(Color.WHITE);
+     boogiLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+     boogiLabel.setIcon(new ImageIcon(new ImageIcon("resource/img/boogi.jpg")
+             .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH))); // 부기 이미지 추가 및 크기 조정
+     boogiLabel.setHorizontalTextPosition(SwingConstants.RIGHT); // 텍스트를 이미지 오른쪽에 배치
+     boogiLabel.setVerticalTextPosition(SwingConstants.CENTER); // 텍스트를 이미지 수평 중앙에 맞춤
+     boogiLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+     characterPanel.add(boogiLabel);
+
+     // 중앙: 게임 방법 설명
+     JLabel helpLabel = new JLabel("<html><div style='text-align: center;'>"
+             + "<h1 style='color: white;'>게임 방법</h2>"
+             + "<p style='color: white; font-size: 18px;'>"
+             + "1. 60초 이내에 단어를 입력하여 최대한 많은 부기를 퇴치하세요.</p>"
+             + "<p style='color: white; font-size: 18px;'>"
+             + "2. 목숨은 5번입니다. 부기가 마법사에게 닿으면 목숨을 잃습니다.</p>"
+             + "<p style='color: white; font-size: 18px;'>"
+             + "3. 단어를 정확히 입력하면 부기를 퇴치할 수 있습니다.</p>"
+             + "<p style='color: white; font-size: 18px;'>"
+             + "4. 즐겁게 플레이하세요!</p>"
+             + "</div></html>", SwingConstants.CENTER);
+     helpLabel.setForeground(Color.WHITE);
+
+     // 하단: 돌아가기 버튼
+     JButton backButton = new JButton("돌아가기");
+     backButton.setFont(new Font("맑은 고딕", Font.BOLD, 16));
+     backButton.setFocusPainted(false);
+     backButton.addActionListener(e -> dispose());
+
+     JPanel buttonPanel = new JPanel();
+     buttonPanel.setBackground(Color.BLACK);
+     buttonPanel.add(backButton);
+
+     // 컴포넌트 배치
+     contentPanel.add(characterPanel, BorderLayout.NORTH); // 상단: 캐릭터 설명
+     contentPanel.add(helpLabel, BorderLayout.CENTER); // 중앙: 게임 방법 설명
+     contentPanel.add(buttonPanel, BorderLayout.SOUTH); // 하단: 돌아가기 버튼
+
+     add(contentPanel);
+     setVisible(true);
+ }
+}
+
+class ScoreboardFrame extends JFrame {
+    public ScoreboardFrame() {
+        setTitle("Scoreboard");
+        setSize(500, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // 스코어 데이터를 표시할 JTextArea
+        JTextArea scoreArea = new JTextArea();
+        scoreArea.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+        scoreArea.setEditable(false); // 수정 불가
+        scoreArea.setOpaque(false); // 배경 투명 처리
+        scoreArea.setForeground(Color.WHITE); // 텍스트 색상: 흰색
+
+        // JScrollPane 설정
+        JScrollPane scrollPane = new JScrollPane(scoreArea);
+        scrollPane.setOpaque(false); // JScrollPane 배경 투명 처리
+        scrollPane.getViewport().setOpaque(false); // 내부 뷰포트 배경 투명
+
+        // 프레임 배경색 설정
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBackground(Color.BLACK); // 배경색: 검정
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // 닫기 버튼
+        JButton closeButton = new JButton("닫기");
+        closeButton.setFont(new Font("맑은 고딕", Font.BOLD, 16));
+        closeButton.setForeground(Color.WHITE); // 버튼 텍스트 색상: 흰색
+        closeButton.setBackground(Color.BLACK); // 버튼 배경색: 검정
+        closeButton.setFocusPainted(false); // 버튼 포커스 테두리 제거
+        closeButton.setBorderPainted(false); // 버튼 테두리 제거
+        closeButton.addActionListener(e -> dispose());
+        contentPanel.add(closeButton, BorderLayout.SOUTH);
+
+        add(contentPanel);
+
+        // 점수 읽기
+        String scores = readAndSortScores();
+        scoreArea.setText(scores);
+
+        setVisible(true);
+    }
+
+    private String readAndSortScores() {
+        File scoreFile = new File("rank.txt");
+        if (!scoreFile.exists()) {
+            return "점수 기록이 없습니다.\n";
+        }
+
+        ArrayList<ScoreEntry> scoreEntries = new ArrayList<>();
+
+        // 파일 읽기 및 파싱
+        try (Scanner scanner = new Scanner(scoreFile)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                ScoreEntry entry = parseScoreEntry(line);
+                if (entry != null) {
+                    scoreEntries.add(entry);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "점수를 읽는 중 오류가 발생했습니다.\n";
+        }
+
+        // 점수 내림차순 정렬
+        scoreEntries.sort((a, b) -> Integer.compare(b.score, a.score));
+
+        // 랭킹 출력
+        StringBuilder sortedScores = new StringBuilder();
+        int rank = 1;
+        for (ScoreEntry entry : scoreEntries) {
+            sortedScores.append(String.format("%d위: %s, 퇴치부기 수 : %d(%s)%n",
+                    rank++, entry.userName, entry.score, entry.difficulty));
+        }
+
+        return sortedScores.toString();
+    }
+
+ // 점수 파싱 메서드
+    private ScoreEntry parseScoreEntry(String line) {
+        try {
+            String[] parts = line.split(", ");
+            String userNamePart = parts[0].split(": ")[1]; // 사용자 이름
+            String scorePart = parts[1].split(": ")[1].trim(); // 점수 (공백 제거)
+            String difficultyPart = scorePart.split("\\(")[1].replace(")", ""); // 난이도
+            int score = Integer.parseInt(scorePart.split("\\(")[0].trim()); // 숫자 부분만 파싱 (공백 제거)
+
+            return new ScoreEntry(userNamePart, score, difficultyPart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // 잘못된 형식의 데이터 무시
+        }
+    }
+
+
+    // 점수 데이터를 저장할 클래스
+    private static class ScoreEntry {
+        String userName;
+        int score;
+        String difficulty;
+
+        public ScoreEntry(String userName, int score, String difficulty) {
+            this.userName = userName;
+            this.score = score;
+            this.difficulty = difficulty;
+        }
+    }
+}
+
+
