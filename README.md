@@ -1,6 +1,7 @@
 #
   Kill the Boogi 
 ---
+##
 마법사가 변형된 한성부기들을 제한시간 내에 퇴치하는게임입니다.
 ---
 
@@ -17,14 +18,14 @@
 
 ---
 
-<h1>
+#
   게임 실행화면
-</h1>
+---
 
 ![Image](https://github.com/user-attachments/assets/e877658b-0f6f-4699-bfd8-5e1032ca0dc4)
 
-<h1>
-  게임의 구조
-</h1>
-<hr>
-![Image](https://github.com/user-attachments/assets/28b9b51c-4074-46fa-85dc-33971d6dd5ab)
+#
+  게임구조
+---
+
+![Image](https://github.com/user-attachments/assets/d4fae180-19c4-4a9c-8066-6dfcbe8a4707)
