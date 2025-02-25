@@ -7,25 +7,24 @@
 <h1>
   게임메뉴화면
 </h1>
-![스크린샷 2024-12-15 221733](https://github.com/user-attachments/assets/0cb1bc7e-3982-4fc2-be62-2616ea714370)
+![Image](https://github.com/user-attachments/assets/f964338b-6a8d-4588-a098-919cc9d9445b)
 <hr>
 
 <h1>
   게임설명 
 </h1>
-![스크린샷 2024-12-15 222936](https://github.com/user-attachments/assets/35a25272-7768-40fb-83d0-2578735d1460)
+![Image](https://github.com/user-attachments/assets/6d711310-e6bb-4c9b-b4a9-61d6b2d87a77)
 
 <hr>
 
 <h1>
   게임 실행화면
 </h1>
-![스크린샷 2024-12-15 223451](https://github.com/user-attachments/assets/eaa509c2-7044-46f1-8e3d-6aae2e4a1627)
-<hr>
-![화면 녹화 중 2024-12-15 211146](https://github.com/user-attachments/assets/ca02b0ae-2375-4290-8f6b-f05066358c71)
+
+![Image](https://github.com/user-attachments/assets/e877658b-0f6f-4699-bfd8-5e1032ca0dc4)
 
 <h1>
   게임의 구조
 </h1>
 <hr>
-![image](https://github.com/user-attachments/assets/2644d294-bd9f-4606-a56f-541b40a2d722)
+![Image](https://github.com/user-attachments/assets/28b9b51c-4074-46fa-85dc-33971d6dd5ab)
