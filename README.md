@@ -1,6 +1,5 @@
-#
-  Kill the Boogi 
----
+# Kill the Boogi 
+
 마법사가 변형부기를 퇴치하는 게임
 
 
